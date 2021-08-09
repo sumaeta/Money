@@ -31,7 +31,7 @@ public class CategoriaController {
         if (categoria.isPresent()){
             return ResponseEntity.ok().body(categoria.get());
         }
-      return ResponseEntity.noContent().build();
+      return ResponseEntity.notFound().build();
     }
 
     @PostMapping
