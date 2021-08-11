@@ -43,4 +43,10 @@ public class PessoaController {
         return ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/{codigo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable Long codigo){
+        pessoaRepository.deleteById(codigo);
+    }
+
 }
