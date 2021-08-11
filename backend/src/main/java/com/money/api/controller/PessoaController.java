@@ -3,16 +3,15 @@ package com.money.api.controller;
 import com.money.api.event.RecursoCriadoEvent;
 import com.money.api.model.Pessoa;
 import com.money.api.repository.PessoaRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -49,4 +48,17 @@ public class PessoaController {
         pessoaRepository.deleteById(codigo);
     }
 
+    @PutMapping("/{codigo}")
+    public ResponseEntity<Pessoa> atualizar(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa){
+        Optional<Pessoa> pessoaSalva = pessoaRepository.findById(codigo);
+
+        if (pessoaSalva.isPresent()){
+            BeanUtils.copyProperties(pessoa, pessoaSalva.get(), "codigo");
+
+            Pessoa pessoaAtual = pessoaRepository.save(pessoaSalva.get());
+            return ResponseEntity.ok(pessoaSalva.get());
+        }
+        return ResponseEntity.badRequest().build();
+
+    }
 }
