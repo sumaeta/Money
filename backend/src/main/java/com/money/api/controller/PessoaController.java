@@ -3,6 +3,7 @@ package com.money.api.controller;
 import com.money.api.event.RecursoCriadoEvent;
 import com.money.api.model.Pessoa;
 import com.money.api.repository.PessoaRepository;
+import com.money.api.services.PessoaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,6 +22,9 @@ public class PessoaController {
 
     @Autowired
     private PessoaRepository pessoaRepository;
+
+    @Autowired
+    private PessoaService pessoaService;
 
     @Autowired
     private ApplicationEventPublisher publisher;
@@ -51,19 +55,15 @@ public class PessoaController {
 
     @PutMapping("/{codigo}")
     public ResponseEntity<Pessoa> atualizar(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa){
-        Optional<Pessoa> pessoaSalva = pessoaRepository.findById(codigo);
 
-        if(pessoaSalva.isEmpty()){
-            throw new EmptyResultDataAccessException(1);
-        }
-
-        if (pessoaSalva.isPresent()){
-            BeanUtils.copyProperties(pessoa, pessoaSalva.get(), "codigo");
-
-            Pessoa pessoaAtual = pessoaRepository.save(pessoaSalva.get());
-            return ResponseEntity.ok(pessoaSalva.get());
-        }
-        return ResponseEntity.badRequest().build();
-
+    Pessoa pessoaSalva = pessoaService.pessoaAtualizar(codigo, pessoa);
+    return ResponseEntity.ok(pessoaSalva);
     }
+
+    @PutMapping("/{codigo}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizarPropriedadeAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo){
+        pessoaService.atualizarPropriedadeAtivo(codigo, ativo);
+    }
+
 }
