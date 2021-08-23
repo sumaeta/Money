@@ -26,7 +26,7 @@ public class PessoaService {
 
     }
 
-    private Optional<Pessoa> buscarPessoaCodigo(Long codigo) {
+    public Optional<Pessoa> buscarPessoaCodigo(Long codigo) {
         Optional<Pessoa> pessoaSalva = pessoaRepository.findById(codigo);
         if (pessoaSalva.isEmpty()) {
             throw new EmptyResultDataAccessException(1);
