@@ -2,11 +2,11 @@ package com.money.api.repository.lancamento;
 
 import com.money.api.model.Lancamento;
 import com.money.api.repository.filter.LancamentoFilter;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface LancamentoRepositoryQuery {
 
-    public List<Lancamento> filtrar(LancamentoFilter lancamentoFilter);
+    public Page<Lancamento> filtrar(LancamentoFilter lancamentoFilter, Pageable pageable);
 
 }
