@@ -9,12 +9,10 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+
 
 @SuppressWarnings("deprecation")
 @Configuration
@@ -32,14 +30,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .withClient("angular")
                 .secret(passwordEncoder.encode("@ngul@r0")) // @ngul@r0
                 .scopes("read", "write")
-                .authorizedGrantTypes("password")
+                .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(1800)
-                .and()
-                .withClient("mobile")
-                .secret(passwordEncoder.encode("m0b1l30")) // m0b1l30
-                .scopes("read")
-                .authorizedGrantTypes("password")
-                .accessTokenValiditySeconds(1800);
+                .refreshTokenValiditySeconds(3600 * 24);
     }
 
     @Override
@@ -47,7 +40,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoints
                 .authenticationManager(authenticationManager)
                 .accessTokenConverter(accessTokenConverter())
-                .tokenStore(tokenStore());
+                .tokenStore(tokenStore())
+                .reuseRefreshTokens(false);
     }
 
     @Bean
